@@ -1,0 +1,36 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'  # Runs every 5 minutes
+  workflow_dispatch:       # Allows manual runs from GitHub UI
+
+jobs:
+  keep_alive:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+      - name: Curl Custom Domain
+        run: curl https://uvcheerful.com
+
+      - name: Curl www Domain
+        run: curl https://www.uvcheerful.com
+
+      - name: Wait for 5 seconds
+        run: sleep 5
+
+      - name: Check Status of Main Site
+        id: check_status
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://uvcheerful.com)
+          echo "status_code=$STATUS" >> $GITHUB_OUTPUT
+          if [[ "$STATUS" != "200" && "$STATUS" != "301" && "$STATUS" != "302" ]]; then
+            echo "❌ Site returned unexpected status $STATUS"
+            exit 1
+          else
+            echo "✅ Site is up with status $STATUS"
+          fi
+  
+      - name: Print Final Message
+        run: echo "✅ Render site pinged successfully and all domains responded!"
