@@ -23,7 +23,7 @@ jobs:
       - name: Check Status of Main Site
         id: check_status
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://uvcheerful.com)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://www.uvcheerful.com)
           echo "status_code=$STATUS" >> $GITHUB_OUTPUT
           if [[ "$STATUS" != "200" && "$STATUS" != "301" && "$STATUS" != "302" ]]; then
             echo "❌ Site returned unexpected status $STATUS"
